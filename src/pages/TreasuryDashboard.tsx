@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { showSuccess, showError } from "@/utils/toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionContextProvider";
+import { Button } from "@/components/ui/button"; // Importar Button para o tratamento de erro
 
 export type FinancialEntry = {
   id: string;
@@ -102,6 +103,7 @@ const TreasuryDashboard = () => {
       showError("Você precisa estar logado para adicionar anotações.");
       return;
     }
+    console.log("Tentando adicionar nova entrada:", newEntry); // Log dos dados antes de enviar
     try {
       const { data, error } = await supabase
         .from("financial_entries")
@@ -115,13 +117,16 @@ const TreasuryDashboard = () => {
         })
         .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Erro do Supabase ao adicionar anotação:", error); // Log do erro do Supabase
+        throw error;
+      }
 
       showSuccess("Anotação financeira adicionada com sucesso!");
       // fetchEntries(); // A atualização em tempo real já deve cuidar disso
     } catch (err: any) {
-      console.error("Erro ao adicionar anotação:", err.message);
-      showError("Erro ao adicionar anotação financeira.");
+      console.error("Erro ao adicionar anotação (catch):", err.message); // Log do erro geral
+      showError("Erro ao adicionar anotação financeira: " + err.message);
     }
   };
 
