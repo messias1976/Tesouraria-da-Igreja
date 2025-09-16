@@ -52,6 +52,20 @@ export const SessionContextProvider = ({ children }: { children: React.ReactNode
     return () => subscription.unsubscribe();
   }, [navigate, location.pathname]);
 
+  console.log("SessionContext Render - Session:", session ? "exists" : "null", "Is Loading:", isLoading, "Current Path:", location.pathname);
+  if (typeof window !== 'undefined') {
+    const supabaseAuthToken = localStorage.getItem('sb-sozymmjdzjqaubuoocpz-auth-token');
+    console.log("SessionContext Render - localStorage token:", supabaseAuthToken ? "exists" : "null");
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+        <p className="text-lg text-gray-600 dark:text-gray-400">Carregando sessão...</p>
+      </div>
+    );
+  }
+
   return (
     <SessionContext.Provider value={{ session, isLoading }}>
       {children}
