@@ -37,9 +37,7 @@ export default function Login() {
           }}
           theme="light"
           redirectTo={redirectToUrl}
-          captcha={recaptchaSiteKey ? true : false} // Ativa o reCAPTCHA se a chave estiver presente
-          // Se você quiser especificar a chave diretamente (não recomendado para produção):
-          // captcha={{ siteKey: recaptchaSiteKey }}
+          captcha={recaptchaSiteKey ? { siteKey: recaptchaSiteKey } : false} // Corrigido para passar o objeto com siteKey
         />
       </div>
     </div>
