@@ -7,15 +7,16 @@ import { useEffect } from "react";
 
 export default function Login() {
   const redirectToUrl = window.location.origin + "/treasury";
-  const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
-
-  const captchaProp = recaptchaSiteKey ? { siteKey: recaptchaSiteKey } : false;
+  // A propriedade 'captcha' não é suportada diretamente pelo componente Auth.
+  // A configuração do reCAPTCHA é geralmente feita no painel do Supabase.
+  // const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+  // const captchaProp = recaptchaSiteKey ? { siteKey: recaptchaSiteKey } : false;
 
   useEffect(() => {
     console.log("Login Page - Redirecting to:", redirectToUrl);
-    console.log("reCAPTCHA Site Key:", recaptchaSiteKey ? "exists" : "null");
-    console.log("Captcha prop passed to Auth component:", captchaProp); // Novo log para depuração
-  }, [redirectToUrl, recaptchaSiteKey, captchaProp]);
+    // console.log("reCAPTCHA Site Key:", recaptchaSiteKey ? "exists" : "null");
+    // console.log("Captcha prop passed to Auth component:", captchaProp); // Novo log para depuração
+  }, [redirectToUrl]); // Removido recaptchaSiteKey e captchaProp das dependências
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
@@ -40,7 +41,7 @@ export default function Login() {
           }}
           theme="light"
           redirectTo={redirectToUrl}
-          captcha={captchaProp}
+          // Removida a propriedade captcha
         />
       </div>
     </div>
