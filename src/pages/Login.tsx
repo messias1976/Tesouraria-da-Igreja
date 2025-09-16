@@ -13,7 +13,8 @@ export default function Login() {
         </h2>
         <Auth
           supabaseClient={supabase}
-          providers={[]} // Você pode adicionar 'google', 'github', etc. aqui
+          providers={["email"]} // Habilitar login/cadastro por e-mail
+          magicLink={true} // Habilitar a opção de Magic Link
           appearance={{
             theme: ThemeSupa,
             variables: {
@@ -25,8 +26,8 @@ export default function Login() {
               },
             },
           }}
-          theme="light" // Pode ser 'dark' ou 'default'
-          redirectTo={window.location.origin + "/treasury"} // Redireciona para a tesouraria após o login
+          theme="light"
+          redirectTo={window.location.origin + "/treasury"}
         />
       </div>
     </div>
