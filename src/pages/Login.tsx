@@ -22,7 +22,7 @@ export default function Login() {
         </h2>
         <Auth
           supabaseClient={supabase}
-          // Removendo a propriedade providers para usar os métodos padrão (email/senha)
+          providers={["github"]}
           magicLink={false}
           appearance={{
             theme: ThemeSupa,
@@ -37,7 +37,7 @@ export default function Login() {
           }}
           theme="light"
           redirectTo={redirectToUrl}
-          captcha={recaptchaSiteKey ? { siteKey: recaptchaSiteKey } : false}
+          captcha={recaptchaSiteKey ? { siteKey: recaptchaSiteKey } : false} // Corrigido para passar o objeto com siteKey
         />
       </div>
     </div>
