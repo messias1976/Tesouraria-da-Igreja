@@ -13,8 +13,8 @@ export default function Login() {
         </h2>
         <Auth
           supabaseClient={supabase}
-          providers={["email"]} // Habilitar login/cadastro por e-mail
-          magicLink={true} // Habilitar a opção de Magic Link
+          providers={["github"]} // Alterado para usar o provedor GitHub
+          magicLink={false} // Desabilitar Magic Link, já que estamos usando GitHub
           appearance={{
             theme: ThemeSupa,
             variables: {
