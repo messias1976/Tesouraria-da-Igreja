@@ -126,7 +126,7 @@ const TreasuryDashboard = () => {
       }
 
       showSuccess("Anotação financeira adicionada com sucesso!");
-      // fetchEntries(); // A atualização em tempo real já deve cuidar disso
+      fetchEntries(); // Reativado para garantir a atualização imediata
     } catch (err: any) {
       console.error("Erro ao adicionar anotação (catch):", err.message); // Log do erro geral
       showError("Erro ao adicionar anotação financeira: " + err.message);
