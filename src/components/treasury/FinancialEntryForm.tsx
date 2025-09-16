@@ -34,10 +34,8 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { FinancialEntry } from "@/pages/TreasuryDashboard"; // Importando o tipo
 
-// Define o tipo para os valores do formulário explicitamente
-type FinancialEntryFormValues = Omit<FinancialEntry, "id">;
-
-const formSchema: z.ZodType<FinancialEntryFormValues> = z.object({
+// Define o esquema do formulário
+const formSchema = z.object({
   type: z.enum(["income", "expense"], {
     required_error: "O tipo é obrigatório.",
   }),
@@ -58,6 +56,9 @@ const formSchema: z.ZodType<FinancialEntryFormValues> = z.object({
   treasurerName: z.string().min(1, "O nome do tesoureiro é obrigatório."),
   viceTreasurerName: z.string().optional(),
 });
+
+// Define o tipo para os valores do formulário explicitamente a partir do esquema Zod
+type FinancialEntryFormValues = z.infer<typeof formSchema>;
 
 type FinancialEntryFormProps = {
   onAddEntry: (entry: FinancialEntryFormValues) => void;
