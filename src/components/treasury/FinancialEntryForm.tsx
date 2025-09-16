@@ -34,7 +34,10 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { FinancialEntry } from "@/pages/TreasuryDashboard"; // Importando o tipo
 
-const formSchema = z.object({
+// Define o tipo para os valores do formulário explicitamente
+type FinancialEntryFormValues = Omit<FinancialEntry, "id">;
+
+const formSchema: z.ZodType<FinancialEntryFormValues> = z.object({
   type: z.enum(["income", "expense"], {
     required_error: "O tipo é obrigatório.",
   }),
@@ -57,11 +60,11 @@ const formSchema = z.object({
 });
 
 type FinancialEntryFormProps = {
-  onAddEntry: (entry: Omit<FinancialEntry, "id">) => void;
+  onAddEntry: (entry: FinancialEntryFormValues) => void;
 };
 
 export function FinancialEntryForm({ onAddEntry }: FinancialEntryFormProps) {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FinancialEntryFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       type: "income",
@@ -75,16 +78,10 @@ export function FinancialEntryForm({ onAddEntry }: FinancialEntryFormProps) {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = (values: FinancialEntryFormValues) => {
     onAddEntry({
-      type: values.type,
-      category: values.category,
-      amount: parseFloat(values.amount.toFixed(2)),
-      date: values.date,
-      description: values.description,
-      payerName: values.payerName,
-      treasurerName: values.treasurerName,
-      viceTreasurerName: values.viceTreasurerName,
+      ...values,
+      amount: parseFloat(values.amount.toFixed(2)), // Garante que o valor seja um número com 2 casas decimais
     });
     form.reset({
       type: "income",
@@ -93,8 +90,8 @@ export function FinancialEntryForm({ onAddEntry }: FinancialEntryFormProps) {
       date: new Date(),
       description: "",
       payerName: "",
-      treasurerName: values.treasurerName, // Keep treasurer name for convenience
-      viceTreasurerName: values.viceTreasurerName, // Keep vice-treasurer name for convenience
+      treasurerName: values.treasurerName, // Mantém o nome do tesoureiro para conveniência
+      viceTreasurerName: values.viceTreasurerName, // Mantém o nome do vice-tesoureiro para conveniência
     });
   };
 
