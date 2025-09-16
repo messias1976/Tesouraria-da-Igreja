@@ -77,8 +77,14 @@ export function FinancialEntryForm({ onAddEntry }: FinancialEntryFormProps) {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     onAddEntry({
-      ...values,
-      amount: parseFloat(values.amount.toFixed(2)), // Ensure amount is a number with 2 decimal places
+      type: values.type,
+      category: values.category,
+      amount: parseFloat(values.amount.toFixed(2)),
+      date: values.date,
+      description: values.description,
+      payerName: values.payerName,
+      treasurerName: values.treasurerName,
+      viceTreasurerName: values.viceTreasurerName,
     });
     form.reset({
       type: "income",
