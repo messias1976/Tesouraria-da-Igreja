@@ -18,7 +18,7 @@ const Index = () => {
         <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
           Gerencie dízimos, ofertas, votos e despesas de forma simples e organizada.
         </p>
-        {!isLoading && (
+        {!isLoading && ( // Only render auth-dependent buttons after loading
           session ? (
             <Link to="/treasury">
               <Button className="px-6 py-3 text-lg">Ir para o Painel da Tesouraria</Button>

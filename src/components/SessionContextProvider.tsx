@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, useMemo } from "react";
 import { Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -18,9 +18,10 @@ export const SessionContextProvider = ({ children }: { children: React.ReactNode
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
-    const publicRoutes = ["/", "/login", "/404"]; // Rotas acessíveis sem autenticação
+  // Memoize public routes to ensure stable reference for useEffect dependencies
+  const publicRoutes = useMemo(() => ["/", "/login", "/404"], []);
 
+  useEffect(() => {
     const handleAuthChange = (event: string, currentSession: Session | null) => {
       console.log("Auth state changed:", event, "Session:", currentSession ? "exists" : "null");
       setSession(currentSession);
@@ -29,14 +30,18 @@ export const SessionContextProvider = ({ children }: { children: React.ReactNode
       const isPublicRoute = publicRoutes.includes(location.pathname);
       console.log("Current path:", location.pathname, "Is public route:", isPublicRoute);
 
-      if (currentSession && location.pathname === "/login") {
-        console.log("Redirecting logged-in user from /login to /treasury");
-        navigate("/treasury");
-      } else if (!currentSession && !isPublicRoute) {
-        console.log("Redirecting unauthenticated user from protected route to /login");
-        navigate("/login");
+      if (currentSession) {
+        // User is logged in
+        if (location.pathname === "/login") {
+          console.log("Redirecting logged-in user from /login to /treasury");
+          navigate("/treasury");
+        }
       } else {
-        console.log("No redirection needed for current state and path.");
+        // User is not logged in
+        if (!isPublicRoute) {
+          console.log("Redirecting unauthenticated user from protected route to /login");
+          navigate("/login");
+        }
       }
     };
 
@@ -45,18 +50,20 @@ export const SessionContextProvider = ({ children }: { children: React.ReactNode
 
     // Get initial session
     supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
-      console.log("Initial session check:", initialSession ? "exists" : "null");
-      handleAuthChange("INITIAL_LOAD", initialSession); // Use the same logic for initial load
+      console.log("Initial session check completed.");
+      handleAuthChange("INITIAL_LOAD", initialSession);
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate, location.pathname]);
+  }, [navigate, location.pathname, publicRoutes]); // Added publicRoutes to dependencies
 
-  console.log("SessionContext Render - Session:", session ? "exists" : "null", "Is Loading:", isLoading, "Current Path:", location.pathname);
-  if (typeof window !== 'undefined') {
-    const supabaseAuthToken = localStorage.getItem('sb-sozymmjdzjqaubuoocpz-auth-token');
-    console.log("SessionContext Render - localStorage token:", supabaseAuthToken ? "exists" : "null");
-  }
+  // Log localStorage token for debugging, only in client-side
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const supabaseAuthToken = localStorage.getItem('sb-sozymmjdzjqaubuoocpz-auth-token');
+      console.log("SessionContext Render - localStorage token:", supabaseAuthToken ? "exists" : "null");
+    }
+  }, [session]); // Log when session changes
 
   if (isLoading) {
     return (

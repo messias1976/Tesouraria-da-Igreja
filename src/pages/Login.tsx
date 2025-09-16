@@ -3,8 +3,15 @@
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
+import { useEffect } from "react";
 
 export default function Login() {
+  const redirectToUrl = window.location.origin + "/treasury";
+
+  useEffect(() => {
+    console.log("Login Page - Redirecting to:", redirectToUrl);
+  }, [redirectToUrl]);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
       <div className="w-full max-w-md p-8 space-y-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
@@ -13,8 +20,8 @@ export default function Login() {
         </h2>
         <Auth
           supabaseClient={supabase}
-          providers={["github"]} // Alterado para usar o provedor GitHub
-          magicLink={false} // Desabilitar Magic Link, já que estamos usando GitHub
+          providers={["github"]}
+          magicLink={false}
           appearance={{
             theme: ThemeSupa,
             variables: {
@@ -27,7 +34,7 @@ export default function Login() {
             },
           }}
           theme="light"
-          redirectTo={window.location.origin + "/treasury"}
+          redirectTo={redirectToUrl}
         />
       </div>
     </div>

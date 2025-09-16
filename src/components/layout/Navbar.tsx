@@ -35,21 +35,23 @@ export function Navbar() {
               <Home className="h-4 w-4" /> Início
             </Button>
           </Link>
-          {session ? (
-            <>
-              <Link to="/treasury">
-                <Button variant="ghost" className="flex items-center gap-2">
-                  <Wallet className="h-4 w-4" /> Tesouraria
+          {!isLoading && ( // Only render auth-dependent buttons after loading
+            session ? (
+              <>
+                <Link to="/treasury">
+                  <Button variant="ghost" className="flex items-center gap-2">
+                    <Wallet className="h-4 w-4" /> Tesouraria
+                  </Button>
+                </Link>
+                <Button onClick={handleLogout} variant="ghost" className="flex items-center gap-2">
+                  <LogOut className="h-4 w-4" /> Sair
                 </Button>
+              </>
+            ) : (
+              <Link to="/login">
+                <Button variant="ghost">Login</Button>
               </Link>
-              <Button onClick={handleLogout} variant="ghost" className="flex items-center gap-2">
-                <LogOut className="h-4 w-4" /> Sair
-              </Button>
-            </>
-          ) : (
-            <Link to="/login">
-              <Button variant="ghost">Login</Button>
-            </Link>
+            )
           )}
         </div>
       </div>
