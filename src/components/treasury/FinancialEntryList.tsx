@@ -2,6 +2,7 @@
 
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { Trash2 } from "lucide-react"; // Importar o ícone de lixeira
 import {
   Table,
   TableBody,
@@ -10,13 +11,26 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Button } from "@/components/ui/button"; // Importar Button
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { FinancialEntry } from "@/pages/TreasuryDashboard"; // Importando o tipo
 
 type FinancialEntryListProps = {
   entries: FinancialEntry[];
+  onDeleteEntry: (id: string) => void; // Adicionar prop para a função de exclusão
 };
 
-export function FinancialEntryList({ entries }: FinancialEntryListProps) {
+export function FinancialEntryList({ entries, onDeleteEntry }: FinancialEntryListProps) {
   return (
     <div className="overflow-x-auto">
       <Table>
@@ -28,13 +42,13 @@ export function FinancialEntryList({ entries }: FinancialEntryListProps) {
             <TableHead>Contribuinte</TableHead>
             <TableHead className="text-right">Valor</TableHead>
             <TableHead>Descrição</TableHead>
-            {/* Colunas de Tesoureiro e Vice-Tesoureiro removidas */}
+            <TableHead className="text-center">Ações</TableHead> {/* Nova coluna para ações */}
           </TableRow>
         </TableHeader>
         <TableBody>
           {entries.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={6} className="text-center text-muted-foreground">
+              <TableCell colSpan={7} className="text-center text-muted-foreground">
                 Nenhuma anotação financeira ainda.
               </TableCell>
             </TableRow>
@@ -60,7 +74,30 @@ export function FinancialEntryList({ entries }: FinancialEntryListProps) {
                 <TableCell className="max-w-[200px] truncate">
                   {entry.description || "-"}
                 </TableCell>
-                {/* Células de Tesoureiro e Vice-Tesoureiro removidas */}
+                <TableCell className="text-center">
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="destructive" size="icon">
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Tem certeza?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Esta ação não pode ser desfeita. Isso excluirá permanentemente
+                          este lançamento financeiro.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => onDeleteEntry(entry.id)}>
+                          Excluir
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </TableCell>
               </TableRow>
             ))
           )}

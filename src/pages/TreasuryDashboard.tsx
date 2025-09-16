@@ -133,6 +133,24 @@ const TreasuryDashboard = () => {
     }
   };
 
+  const handleDeleteEntry = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from("financial_entries")
+        .delete()
+        .eq("id", id)
+        .eq("user_id", userId); // Garantir que o usuário só pode deletar suas próprias entradas
+
+      if (error) throw error;
+
+      showSuccess("Lançamento financeiro excluído com sucesso!");
+      fetchEntries(); // Atualizar a lista após a exclusão
+    } catch (err: any) {
+      console.error("Erro ao excluir anotação:", err.message);
+      showError("Erro ao excluir lançamento financeiro: " + err.message);
+    }
+  };
+
   const totalIncome = entries
     .filter((entry) => entry.type === "income")
     .reduce((sum, entry) => sum + entry.amount, 0);
@@ -196,7 +214,7 @@ const TreasuryDashboard = () => {
           <CardTitle>Histórico de Anotações</CardTitle>
         </CardHeader>
         <CardContent>
-          <FinancialEntryList entries={entries} />
+          <FinancialEntryList entries={entries} onDeleteEntry={handleDeleteEntry} />
         </CardContent>
       </Card>
     </div>
