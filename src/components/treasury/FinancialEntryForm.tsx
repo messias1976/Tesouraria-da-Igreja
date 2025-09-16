@@ -80,8 +80,14 @@ export function FinancialEntryForm({ onAddEntry }: FinancialEntryFormProps) {
 
   const onSubmit = (values: FinancialEntryFormValues) => {
     onAddEntry({
-      ...values,
+      type: values.type,
+      category: values.category,
       amount: parseFloat(values.amount.toFixed(2)), // Garante que o valor seja um número com 2 casas decimais
+      date: values.date,
+      description: values.description,
+      payerName: values.payerName,
+      treasurerName: values.treasurerName,
+      viceTreasurerName: values.viceTreasurerName,
     });
     form.reset({
       type: "income",
