@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { FinancialEntry } from "@/pages/TreasuryDashboard"; // Importando o tipo
+import { useSession } from "@/components/SessionContextProvider"; // Importar useSession
 
 // Define o esquema do formulário
 const formSchema = z.object({
@@ -53,8 +54,7 @@ const formSchema = z.object({
   }),
   description: z.string().optional(),
   payerName: z.string().optional(),
-  treasurerName: z.string().min(1, "O nome do tesoureiro é obrigatório."),
-  viceTreasurerName: z.string().optional(),
+  // treasurerName e viceTreasurerName foram removidos do formulário
 });
 
 // Define o tipo para os valores do formulário explicitamente a partir do esquema Zod
@@ -65,6 +65,9 @@ type FinancialEntryFormProps = {
 };
 
 export function FinancialEntryForm({ onAddEntry }: FinancialEntryFormProps) {
+  const { session } = useSession();
+  const treasurerName = session?.user?.user_metadata?.first_name || session?.user?.email || "Desconhecido";
+
   const form = useForm<FinancialEntryFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -74,8 +77,7 @@ export function FinancialEntryForm({ onAddEntry }: FinancialEntryFormProps) {
       date: new Date(),
       description: "",
       payerName: "",
-      treasurerName: "",
-      viceTreasurerName: "",
+      // treasurerName e viceTreasurerName foram removidos dos defaultValues
     },
   });
 
@@ -83,12 +85,12 @@ export function FinancialEntryForm({ onAddEntry }: FinancialEntryFormProps) {
     onAddEntry({
       type: values.type,
       category: values.category,
-      amount: parseFloat(values.amount.toFixed(2)), // Garante que o valor seja um número com 2 casas decimais
+      amount: parseFloat(values.amount.toFixed(2)),
       date: values.date,
       description: values.description,
       payerName: values.payerName,
-      treasurerName: values.treasurerName,
-      viceTreasurerName: values.viceTreasurerName,
+      treasurerName: treasurerName, // Usar o nome do tesoureiro da sessão
+      viceTreasurerName: undefined, // Não há vice-tesoureiro no formulário
     });
     form.reset({
       type: "income",
@@ -97,8 +99,7 @@ export function FinancialEntryForm({ onAddEntry }: FinancialEntryFormProps) {
       date: new Date(),
       description: "",
       payerName: "",
-      treasurerName: values.treasurerName, // Mantém o nome do tesoureiro para conveniência
-      viceTreasurerName: values.viceTreasurerName, // Mantém o nome do vice-tesoureiro para conveniência
+      // treasurerName e viceTreasurerName foram removidos do reset
     });
   };
 
@@ -259,34 +260,15 @@ export function FinancialEntryForm({ onAddEntry }: FinancialEntryFormProps) {
           )}
         />
 
+        {/* Campos de Tesoureiro e Vice-Tesoureiro removidos do formulário */}
+        {/* O nome do tesoureiro será preenchido automaticamente pela sessão */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="treasurerName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nome do Tesoureiro</FormLabel>
-                <FormControl>
-                  <Input placeholder="Nome do tesoureiro" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="viceTreasurerName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nome do Vice-Tesoureiro (opcional)</FormLabel>
-                <FormControl>
-                  <Input placeholder="Nome do vice-tesoureiro" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <FormItem>
+            <FormLabel>Nome do Tesoureiro</FormLabel>
+            <FormControl>
+              <Input value={treasurerName} disabled />
+            </FormControl>
+          </FormItem>
         </div>
 
         <Button type="submit" className="w-full">

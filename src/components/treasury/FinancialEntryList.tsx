@@ -28,14 +28,13 @@ export function FinancialEntryList({ entries }: FinancialEntryListProps) {
             <TableHead>Contribuinte</TableHead>
             <TableHead className="text-right">Valor</TableHead>
             <TableHead>Descrição</TableHead>
-            <TableHead>Tesoureiro</TableHead>
-            <TableHead>Vice-Tesoureiro</TableHead>
+            {/* Colunas de Tesoureiro e Vice-Tesoureiro removidas */}
           </TableRow>
         </TableHeader>
         <TableBody>
           {entries.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={8} className="text-center text-muted-foreground">
+              <TableCell colSpan={6} className="text-center text-muted-foreground">
                 Nenhuma anotação financeira ainda.
               </TableCell>
             </TableRow>
@@ -61,8 +60,7 @@ export function FinancialEntryList({ entries }: FinancialEntryListProps) {
                 <TableCell className="max-w-[200px] truncate">
                   {entry.description || "-"}
                 </TableCell>
-                <TableCell>{entry.treasurerName}</TableCell>
-                <TableCell>{entry.viceTreasurerName || "-"}</TableCell>
+                {/* Células de Tesoureiro e Vice-Tesoureiro removidas */}
               </TableRow>
             ))
           )}
