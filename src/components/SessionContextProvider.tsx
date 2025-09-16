@@ -19,35 +19,34 @@ export const SessionContextProvider = ({ children }: { children: React.ReactNode
   const location = useLocation();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, currentSession) => {
+    const publicRoutes = ["/", "/login", "/404"]; // Rotas acessíveis sem autenticação
+
+    const handleAuthChange = (event: string, currentSession: Session | null) => {
+      console.log("Auth state changed:", event, "Session:", currentSession ? "exists" : "null");
       setSession(currentSession);
       setIsLoading(false);
 
-      const publicRoutes = ["/", "/login", "/404"]; // Rotas acessíveis sem autenticação
       const isPublicRoute = publicRoutes.includes(location.pathname);
+      console.log("Current path:", location.pathname, "Is public route:", isPublicRoute);
 
       if (currentSession && location.pathname === "/login") {
-        // Se o usuário está logado e tenta acessar a página de login, redireciona para a tesouraria
+        console.log("Redirecting logged-in user from /login to /treasury");
         navigate("/treasury");
       } else if (!currentSession && !isPublicRoute) {
-        // Se o usuário não está logado e tenta acessar uma rota protegida, redireciona para o login
+        console.log("Redirecting unauthenticated user from protected route to /login");
         navigate("/login");
+      } else {
+        console.log("No redirection needed for current state and path.");
       }
-    });
+    };
 
-    // Carregar a sessão inicial
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(handleAuthChange);
+
+    // Get initial session
     supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
-      setSession(initialSession);
-      setIsLoading(false);
-
-      const publicRoutes = ["/", "/login", "/404"];
-      const isPublicRoute = publicRoutes.includes(location.pathname);
-
-      if (initialSession && location.pathname === "/login") {
-        navigate("/treasury");
-      } else if (!initialSession && !isPublicRoute) {
-        navigate("/login");
-      }
+      console.log("Initial session check:", initialSession ? "exists" : "null");
+      handleAuthChange("INITIAL_LOAD", initialSession); // Use the same logic for initial load
     });
 
     return () => subscription.unsubscribe();

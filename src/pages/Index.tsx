@@ -2,9 +2,14 @@ import { MadeWithDyad } from "@/components/made-with-dyad";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/components/SessionContextProvider";
+import React from "react";
 
 const Index = () => {
   const { session, isLoading } = useSession();
+
+  React.useEffect(() => {
+    console.log("Index Page - Session:", session ? "exists" : "null", "Is Loading:", isLoading);
+  }, [session, isLoading]);
 
   return (
     <div className="min-h-[calc(100vh-64px)] flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-4">
