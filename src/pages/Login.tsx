@@ -9,10 +9,13 @@ export default function Login() {
   const redirectToUrl = window.location.origin + "/treasury";
   const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
+  const captchaProp = recaptchaSiteKey ? { siteKey: recaptchaSiteKey } : false;
+
   useEffect(() => {
     console.log("Login Page - Redirecting to:", redirectToUrl);
     console.log("reCAPTCHA Site Key:", recaptchaSiteKey ? "exists" : "null");
-  }, [redirectToUrl, recaptchaSiteKey]);
+    console.log("Captcha prop passed to Auth component:", captchaProp); // Novo log para depuração
+  }, [redirectToUrl, recaptchaSiteKey, captchaProp]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
@@ -37,7 +40,7 @@ export default function Login() {
           }}
           theme="light"
           redirectTo={redirectToUrl}
-          captcha={recaptchaSiteKey ? { siteKey: recaptchaSiteKey } : false} // Corrigido para passar o objeto com siteKey
+          captcha={captchaProp}
         />
       </div>
     </div>
