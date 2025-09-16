@@ -12,4 +12,10 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.error('Supabase URL ou Anon Key está faltando. Por favor, verifique suas variáveis de ambiente.');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,   // mantém o usuário logado
+    autoRefreshToken: true, // renova o token automaticamente
+    detectSessionInUrl: true // importante para login via OAuth
+  }
+});
