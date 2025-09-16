@@ -108,12 +108,15 @@ const TreasuryDashboard = () => {
       const { data, error } = await supabase
         .from("financial_entries")
         .insert({
-          ...newEntry,
           user_id: userId, // Adicionar user_id ao inserir
-          payer_name: newEntry.payerName,
-          treasurer_name: newEntry.treasurerName,
-          vice_treasurer_name: newEntry.viceTreasurerName,
+          type: newEntry.type,
+          category: newEntry.category,
+          amount: newEntry.amount,
           date: newEntry.date.toISOString(), // Converter Date para string ISO
+          description: newEntry.description,
+          payer_name: newEntry.payerName, // Mapeamento explícito para snake_case
+          treasurer_name: newEntry.treasurerName, // Mapeamento explícito para snake_case
+          vice_treasurer_name: newEntry.viceTreasurerName, // Mapeamento explícito para snake_case
         })
         .select();
 
