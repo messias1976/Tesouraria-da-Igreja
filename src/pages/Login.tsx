@@ -7,10 +7,12 @@ import { useEffect } from "react";
 
 export default function Login() {
   const redirectToUrl = window.location.origin + "/treasury";
+  const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
   useEffect(() => {
     console.log("Login Page - Redirecting to:", redirectToUrl);
-  }, [redirectToUrl]);
+    console.log("reCAPTCHA Site Key:", recaptchaSiteKey ? "exists" : "null");
+  }, [redirectToUrl, recaptchaSiteKey]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
@@ -35,6 +37,9 @@ export default function Login() {
           }}
           theme="light"
           redirectTo={redirectToUrl}
+          captcha={recaptchaSiteKey ? true : false} // Ativa o reCAPTCHA se a chave estiver presente
+          // Se você quiser especificar a chave diretamente (não recomendado para produção):
+          // captcha={{ siteKey: recaptchaSiteKey }}
         />
       </div>
     </div>
