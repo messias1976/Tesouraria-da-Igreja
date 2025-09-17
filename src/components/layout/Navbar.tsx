@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionContextProvider";
 import { showSuccess, showError } from "@/utils/toast";
-import { LogOut, Home, Wallet } from "lucide-react"; // Importar ícones
+import { LogOut, Home, Wallet, User } from "lucide-react"; // Importar ícones, incluindo User
 
 export function Navbar() {
   const { session, isLoading } = useSession();
@@ -23,6 +23,8 @@ export function Navbar() {
     }
   };
 
+  const userName = session?.user?.user_metadata?.first_name || session?.user?.email;
+
   return (
     <nav className="bg-primary text-primary-foreground p-4 shadow-md">
       <div className="container mx-auto flex justify-between items-center">
@@ -38,6 +40,11 @@ export function Navbar() {
           {!isLoading && ( // Only render auth-dependent buttons after loading
             session ? (
               <>
+                {userName && (
+                  <span className="flex items-center gap-2 text-sm font-medium">
+                    <User className="h-4 w-4" /> {userName}
+                  </span>
+                )}
                 <Link to="/treasury">
                   <Button variant="ghost" className="flex items-center gap-2">
                     <Wallet className="h-4 w-4" /> Tesouraria
