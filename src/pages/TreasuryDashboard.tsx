@@ -192,11 +192,13 @@ const TreasuryDashboard = () => {
         Painel da Tesouraria
       </h1>
 
-      <TreasurySummary
-        totalIncome={totalIncome}
-        totalExpenses={totalExpenses}
-        balance={balance}
-      />
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+        <TreasurySummary
+          totalIncome={totalIncome}
+          totalExpenses={totalExpenses}
+          balance={balance}
+        />
+      </div>
 
       <Card>
         <CardHeader>
