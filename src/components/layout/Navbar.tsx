@@ -23,7 +23,8 @@ export function Navbar() {
     }
   };
 
-  const userName = session?.user?.user_metadata?.first_name || session?.user?.email;
+  // Prioriza first_name, se não existir, usa o email
+  const displayName = session?.user?.user_metadata?.first_name || session?.user?.email;
 
   return (
     <nav className="bg-primary text-primary-foreground p-4 shadow-md">
@@ -40,9 +41,9 @@ export function Navbar() {
           {!isLoading && ( // Only render auth-dependent buttons after loading
             session ? (
               <>
-                {userName && (
+                {displayName && (
                   <span className="flex items-center gap-2 text-sm font-medium">
-                    <User className="h-4 w-4" /> {userName}
+                    <User className="h-4 w-4" /> {displayName}
                   </span>
                 )}
                 <Link to="/treasury">

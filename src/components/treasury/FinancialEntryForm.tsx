@@ -34,6 +34,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { FinancialEntry } from "@/pages/TreasuryDashboard"; // Importando o tipo
 import { useSession } from "@/components/SessionContextProvider"; // Importar useSession
+import { TreasurerSelect } from "./TreasurerSelect"; // Importar o novo componente
 
 // Define o esquema do formulário
 const formSchema = z.object({
@@ -54,7 +55,7 @@ const formSchema = z.object({
   }),
   description: z.string().optional(),
   payerName: z.string().optional(),
-  // treasurerName e viceTreasurerName foram removidos do formulário
+  treasurerName: z.string().min(1, "O nome do tesoureiro é obrigatório."), // Adicionado de volta e agora é obrigatório
 });
 
 // Define o tipo para os valores do formulário explicitamente a partir do esquema Zod
@@ -66,7 +67,8 @@ type FinancialEntryFormProps = {
 
 export function FinancialEntryForm({ onAddEntry }: FinancialEntryFormProps) {
   const { session } = useSession();
-  const treasurerName = session?.user?.user_metadata?.first_name || session?.user?.email || "Desconhecido";
+  // O nome do tesoureiro inicial será o do usuário logado, mas pode ser alterado pelo select
+  const defaultTreasurerName = session?.user?.user_metadata?.first_name || session?.user?.email || "Desconhecido";
 
   const form = useForm<FinancialEntryFormValues>({
     resolver: zodResolver(formSchema),
@@ -77,7 +79,7 @@ export function FinancialEntryForm({ onAddEntry }: FinancialEntryFormProps) {
       date: new Date(),
       description: "",
       payerName: "",
-      // treasurerName e viceTreasurerName foram removidos dos defaultValues
+      treasurerName: defaultTreasurerName, // Usar o nome do tesoureiro padrão
     },
   });
 
@@ -89,7 +91,7 @@ export function FinancialEntryForm({ onAddEntry }: FinancialEntryFormProps) {
       date: values.date,
       description: values.description,
       payerName: values.payerName,
-      treasurerName: treasurerName, // Usar o nome do tesoureiro da sessão
+      treasurerName: values.treasurerName, // Agora vem do formulário
       viceTreasurerName: undefined, // Não há vice-tesoureiro no formulário
     });
     form.reset({
@@ -99,7 +101,7 @@ export function FinancialEntryForm({ onAddEntry }: FinancialEntryFormProps) {
       date: new Date(),
       description: "",
       payerName: "",
-      // treasurerName e viceTreasurerName foram removidos do reset
+      treasurerName: defaultTreasurerName, // Resetar para o tesoureiro padrão
     });
   };
 
@@ -260,16 +262,22 @@ export function FinancialEntryForm({ onAddEntry }: FinancialEntryFormProps) {
           )}
         />
 
-        {/* Campos de Tesoureiro e Vice-Tesoureiro removidos do formulário */}
-        {/* O nome do tesoureiro será preenchido automaticamente pela sessão */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormItem>
-            <FormLabel>Nome do Tesoureiro</FormLabel>
-            <FormControl>
-              <Input value={treasurerName} disabled />
-            </FormControl>
-          </FormItem>
-        </div>
+        <FormField
+          control={form.control}
+          name="treasurerName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nome do Tesoureiro</FormLabel>
+              <FormControl>
+                <TreasurerSelect
+                  selectedTreasurer={field.value}
+                  onTreasurerChange={field.onChange}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <Button type="submit" className="w-full">
           Adicionar Anotação

@@ -40,15 +40,16 @@ export function FinancialEntryList({ entries, onDeleteEntry }: FinancialEntryLis
             <TableHead>Tipo</TableHead>
             <TableHead>Categoria</TableHead>
             <TableHead>Contribuinte</TableHead>
+            <TableHead>Tesoureiro</TableHead> {/* Nova coluna para o Tesoureiro */}
             <TableHead className="text-right">Valor</TableHead>
             <TableHead>Descrição</TableHead>
-            <TableHead className="text-center">Ações</TableHead> {/* Nova coluna para ações */}
+            <TableHead className="text-center">Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {entries.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={7} className="text-center text-muted-foreground">
+              <TableCell colSpan={8} className="text-center text-muted-foreground">
                 Nenhuma anotação financeira ainda.
               </TableCell>
             </TableRow>
@@ -63,6 +64,7 @@ export function FinancialEntryList({ entries, onDeleteEntry }: FinancialEntryLis
                 </TableCell>
                 <TableCell>{entry.category}</TableCell>
                 <TableCell>{entry.payerName || "-"}</TableCell>
+                <TableCell>{entry.treasurerName || "-"}</TableCell> {/* Exibir o nome do tesoureiro */}
                 <TableCell
                   className={`text-right font-medium ${
                     entry.type === "income" ? "text-green-600" : "text-red-600"
